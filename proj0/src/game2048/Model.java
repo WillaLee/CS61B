@@ -93,8 +93,14 @@ public class Model {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
-
-
+        int size = b.size();
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(b.tile(i, j) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -105,8 +111,16 @@ public class Model {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
-
-
+        int size = b.size();
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(b.tile(i, j) != null){
+                    if(b.tile(i, j).value() == MAX_PIECE){
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -116,10 +130,29 @@ public class Model {
      * 1. There is at least one empty space on the board.
      * 2. There are two adjacent tiles with the same value.
      */
+    public static boolean adjacentSameValueExists(Board b){
+        int size = b.size();
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size - 1; j++){
+                if (b.tile(i, j).value() == b.tile(i, j + 1).value()){
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size - 1; j++){
+                if (b.tile(j, i).value() == b.tile(j + 1, i).value()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
-
-
+        if(emptySpaceExists(b) || adjacentSameValueExists(b)){
+            return true;
+        }
         return false;
     }
 
@@ -138,7 +171,31 @@ public class Model {
     public void tilt(Side side) {
         // TODO: Modify this.board (and if applicable, this.score) to account
         // for the tilt to the Side SIDE.
-
+        this.board.setViewingPerspective(side);
+        int size = this.board.size();
+        for (int i = 0; i < size; i++){
+            int rowOfTileToMove = size - 1;
+            while(rowOfTileToMove > 0){
+                for (int j = rowOfTileToMove - 1; j >= 0; j--){
+                    Tile t = this.board.tile(i, j);
+                    if (t == null){
+                        continue;
+                    }
+                    if (this.board.tile(i, rowOfTileToMove) == null){
+                        this.board.move(i, rowOfTileToMove, t);
+                        rowOfTileToMove++;
+                    } else if (this.board.tile(i, rowOfTileToMove).value() == t.value()) {
+                        this.board.move(i, rowOfTileToMove, t);
+                        this.score += board.tile(i, rowOfTileToMove).value();
+                    } else {
+                        this.board.move(i, rowOfTileToMove - 1, t);
+                    }
+                    break;
+                }
+                rowOfTileToMove--;
+            }
+        }
+        this.board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
     }
