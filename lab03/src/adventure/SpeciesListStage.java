@@ -18,7 +18,6 @@ public class SpeciesListStage implements AdventureStage {
             "squirrels",    // Java: The Good Parts
             "hummingbirds"  // Better, Faster, Lighter Java
     );
-    private static final List<String> REFERENCE_3 = new ArrayList<>();
 
     private final In in;
     private final Map<String, AdventureStage> responses;
@@ -54,7 +53,7 @@ public class SpeciesListStage implements AdventureStage {
         this.handleResponses(REFERENCE_2);
 
         System.out.println("Well, there's nothing left here! press enter to move.");
-        this.handleResponses(REFERENCE_3);
+        String input = in.readLine();
     }
 
     @Override
